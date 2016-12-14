@@ -8,7 +8,7 @@ class LinkedList
 
   def append(data)
     # Adds a new node to the end of the list
-    (@head.value.nil? && @head.next.nil?) ? (@head.value = data ; return @head) : nil
+    (@head.value = data ; return @head) if headless?
 
     tail_node            = tail
     tail_node.next       = Node.new
@@ -19,7 +19,7 @@ class LinkedList
 
   def prepend(data)
     # Add a new node to the start of the list
-    (@head.value.nil? && @head.next.nil?) ? (@head.value = data ; return @head) : nil
+    (@head.value = data ; return @head) if headless?
 
     new_node       = Node.new
     new_node.value = data
@@ -29,13 +29,19 @@ class LinkedList
     new_node
   end
 
+  def headless?
+    # Returns true is the head has no value else false
+    @head.value.nil? && @head.next.nil?
+  end
+
   def size
     # Returns the total number of nodes in the list
-    @head.value.nil? ? count = 0 : count = 1
+    headless? ? count = 0 : count = 1
+
     node = @head
 
     until node.next.nil?
-      node = node.next
+      node   = node.next
       count += 1
     end
 
@@ -55,7 +61,7 @@ class LinkedList
 
   def pop
     # Removes the last element from the list
-    return -1 if (@head.value.nil? && @head.next.nil?)
+    return -1 if headless?
 
     popped_node    = tail.clone
     new_tail_index = size - 2
@@ -89,9 +95,9 @@ class LinkedList
   def find(item)
     # Returns the index of the node containing the data
     index = 0
-    node = @head
+    node  = @head
 
-    until node.nil?
+    while true
       if node.value == item
         break
       elsif node.next.nil?
@@ -161,7 +167,8 @@ class LinkedList
     # Delete a node at a given index and returned an orphaned/childless version of it
     if index == 0
       deleted_node = @head.clone
-      @head = @head.next
+      @head.value = nil
+      @head = @head.next unless headless?
     else
       node         = self[index-1]
       deleted_node = node.next.clone
