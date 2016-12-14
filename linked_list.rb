@@ -53,29 +53,6 @@ class LinkedList
     node
   end
 
-  def at(index)
-    # Returns the node at a given index
-    return @head if index == 0
-    return -2    if index <  0
-
-    count = 0
-    node = @head
-
-    while true
-      break if index == count
-
-      if node.nil?
-        node = -1
-        break
-      else
-        node = node.next
-        count += 1
-      end
-    end
-
-    node
-  end
-
   def pop
     # Removes the last element from the list
     return -1 if (@head.value.nil? && @head.next.nil?)
@@ -86,7 +63,7 @@ class LinkedList
     if new_tail_index < 0
       @head.value = nil
     else
-      at(new_tail_index).next = nil
+      self[new_tail_index].next = nil
     end
 
     popped_node
@@ -141,6 +118,61 @@ class LinkedList
 
     sval[0..-5]
   end
+
+  def [](index)
+    # Returns the node at a given index
+    return @head if index == 0
+    return -2    if index <  0
+
+    count = 0
+    node  = @head
+
+    while true
+      break if index == count
+
+      if node.nil?
+        node = -1
+        break
+      else
+        node = node.next
+        count += 1
+      end
+    end
+
+    node
+  end
+
+  def []=(index, data)
+    # Change the value of a node at a given index
+    self[index].value = data
+  end
+
+  def insert(index, data)
+    # Insert a new node at a given index
+    new_node           = Node.new
+    new_node.value     = data
+    new_node.next      = self[index]
+    self[index-1].next = new_node
+
+    new_node
+  end
+
+  def delete_at(index)
+    # Delete a node at a given index
+    if index == 0
+      deleted_node = @head.clone
+      @head = @head.next
+    else
+      node         = self[index-1]
+      deleted_node = node.next.clone
+      node.next    = node.next.next
+    end
+
+    deleted_node
+  end
+
+  alias_method :at, :[]
+  alias_method :amend, :[]=
 end
 
 class Node
