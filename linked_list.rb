@@ -154,11 +154,11 @@ class LinkedList
     new_node.next      = self[index]
     self[index-1].next = new_node
 
-    new_node
+    data
   end
 
   def delete_at(index)
-    # Delete a node at a given index
+    # Delete a node at a given index and returned an orphaned/childless version of it
     if index == 0
       deleted_node = @head.clone
       @head = @head.next
@@ -168,6 +168,7 @@ class LinkedList
       node.next    = node.next.next
     end
 
+    deleted_node.next = nil
     deleted_node
   end
 
