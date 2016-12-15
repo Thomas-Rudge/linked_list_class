@@ -2,12 +2,21 @@ class LinkedList
 
   attr_reader :head
 
-  def initialize
+  def initialize(*args)
     @head = Node.new
+
+    append(*args)
   end
 
-  def append(data)
-    # Adds a new node to the end of the list
+  def append(*data)
+    # Adds one or more nodes to the end of the list
+    if data.length > 1
+      data.each { |x| append(x) }
+      return data
+    else
+      data = data[0]
+    end
+
     (@head.value = data ; return @head) if headless?
 
     tail_node            = tail
@@ -17,8 +26,15 @@ class LinkedList
     tail_node.next
   end
 
-  def prepend(data)
-    # Add a new node to the start of the list
+  def prepend(*data)
+    # Add one or more nodes to the start of the list
+    if data.length > 1
+      data.each { |x| prepend(x) }
+      return data
+    else
+      data = data[0]
+    end
+
     (@head.value = data ; return @head) if headless?
 
     new_node       = Node.new
@@ -59,9 +75,14 @@ class LinkedList
     node
   end
 
-  def pop
+  def pop(*pops)
     # Removes the last element from the list
     return -1 if headless?
+
+    unless pops.empty?
+      pops[0].times { pop }
+      return
+    end
 
     popped_node    = tail.clone
     new_tail_index = size - 2
@@ -181,6 +202,8 @@ class LinkedList
 
   alias_method :at, :[]
   alias_method :amend, :[]=
+  alias_method :<<, :append
+  alias_method :>>, :prepend
 end
 
 class Node
@@ -190,5 +213,11 @@ class Node
   def initialize
     @value = nil
     @next = nil
+  end
+end
+
+class L
+  def self.[](*args)
+    LinkedList.new(*args)
   end
 end
